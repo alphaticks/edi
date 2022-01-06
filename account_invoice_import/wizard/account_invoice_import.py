@@ -1005,8 +1005,11 @@ class AccountInvoiceImport(models.TransientModel):
                 logger.info(
                     'Attachment %d: %s. Trying to import it as an invoice',
                     i, attach.fname)
-                parsed_inv = self.parse_invoice(
-                    base64.b64encode(attach.content), attach.fname)
+                try:
+                    parsed_inv = self.parse_invoice(
+                        base64.b64encode(attach.content), attach.fname)
+                except Exception as e:
+                    logger.warning("exception occur trying to parse attachment %s", str(e))
                 partner = bdio._match_partner(
                     parsed_inv['partner'], parsed_inv['chatter_msg'])
 
